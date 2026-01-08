@@ -67,8 +67,8 @@ const GanttChart = ({ tasks, setTasks }) => {
             );
             const maxEnd = depTasks.length
               ? depTasks
-                  .map((dt) => parseISO(dt.end))
-                  .reduce((a, b) => dateMax(a, b))
+                .map((dt) => parseISO(dt.end))
+                .reduce((a, b) => dateMax(a, b))
               : parseISO(newStart);
 
             if (isBefore(parseISO(newStart), maxEnd)) {
@@ -282,9 +282,9 @@ const GanttChart = ({ tasks, setTasks }) => {
 
   const getXyflowPath = ({ x1, y1, x2, y2, fromType, toType }) => {
     // console.log("Data cheker For both types",x1,y1,x2,y2,fromType,toType);
-    const YAdjusted2 = toType === "E" ? y2-5 : y2+5;
-    const yAdjusted1 = fromType === "S" ? y1+5 : y1-5;
-    const xAdjusted2 = toType === "S" ? x2-2 :x2+2;
+    const YAdjusted2 = toType === "E" ? y2 - 5 : y2 + 5;
+    const yAdjusted1 = fromType === "S" ? y1 + 5 : y1 - 5;
+    const xAdjusted2 = toType === "S" ? x2 - 2 : x2 + 2;
     const [path] = getSmoothStepPath({
       sourceX: x1,
       sourceY: yAdjusted1,
@@ -293,7 +293,7 @@ const GanttChart = ({ tasks, setTasks }) => {
       sourcePosition: fromType === "E" ? "right" : "left",
       targetPosition: toType === "S" ? "left" : "right",
       borderRadius: 4,
-      offset:40,
+      offset: 40,
     });
 
     return path;
@@ -302,7 +302,7 @@ const GanttChart = ({ tasks, setTasks }) => {
   return (
     <div
       className="gantt-wrapper"
-      style={{ display: "flex", overflow: "hidden",userSelect:"none" }}
+      style={{ display: "flex", overflow: "hidden", userSelect: "none" }}
     >
       {/* LEFT PANEL */}
       <div
@@ -311,7 +311,7 @@ const GanttChart = ({ tasks, setTasks }) => {
           width: leftWidth,
           overflowY: "auto",
           borderRight: "1px solid #ccc",
-          background: "#f9f9f9",
+          // background: "#f9f9f9",
         }}
       >
         <div
@@ -434,11 +434,11 @@ const GanttChart = ({ tasks, setTasks }) => {
               <div className="task-cell" style={{ flex: 2 }}>
                 {(task.depends_on || []).length > 0
                   ? task.depends_on
-                      .map((d) => {
-                        const depTask = tasks.find((t) => t.id === d.id);
-                        return depTask ? `${depTask.title} (${d.type})` : "";
-                      })
-                      .join(", ")
+                    .map((d) => {
+                      const depTask = tasks.find((t) => t.id === d.id);
+                      return depTask ? `${depTask.title} (${d.type})` : "";
+                    })
+                    .join(", ")
                   : "-"}
               </div>
             </div>
@@ -499,7 +499,7 @@ const GanttChart = ({ tasks, setTasks }) => {
           overflowX: "auto",
           overflowY: "auto",
           position: "relative",
-          background: "#fff",
+          // background: "#fff",
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -616,6 +616,15 @@ const GanttChart = ({ tasks, setTasks }) => {
               key={task.id}
               bounds="parent"
               dragAxis="x"
+              style={{
+                zIndex: 10,
+                // alignItems:"center",
+                // alignContent:"center",
+                // justifyContent:"center",
+                justifyItems:"center",
+                userSelect:"none"
+
+              }}
               disableDragging={!!drawing}
               enableResizing={{ left: true, right: true }}
               size={{
@@ -651,7 +660,7 @@ const GanttChart = ({ tasks, setTasks }) => {
               }}
               className="gantt-task-bar"
             >
-              {task.title}
+              <p>{task.title}</p>
               <div
                 className="circle start-circle"
                 onMouseDown={(e) => startDrawing(e, task.id, "S")}

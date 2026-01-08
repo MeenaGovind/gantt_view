@@ -366,7 +366,7 @@ body {
 
 h1 {
   text-align: center;
-  color: #2c3e50;
+  color: white;
   margin-bottom: 20px;
 }
 
@@ -385,22 +385,25 @@ h1 {
 
 .gantt-wrapper {
   display: flex;
-  height: 500px;
-  background: #fff;
+  height: 80%;
+  /* background: #fff; */
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
 .gantt-left {
-  background: #f1f2f6;
+  color: white;
+  background-color: rgb(255 255 255 / 20%);
+  /* background: #f1f2f6; */
   overflow-x: auto;
 }
 .task-header-row {
+
   display: flex;
   font-weight: bold;
   padding: 8px;
-  color: black;
+  color: white;
   border-bottom: 1px solid #b2bec3;
 }
 .task-row-horizontal {
@@ -435,6 +438,8 @@ h1 {
 }
 
 .gantt-right {
+  color: white;
+  background-color: rgb(255 255 255 / 20%);
   flex: 1;
   overflow-x: auto;
   position: relative;
@@ -444,7 +449,7 @@ h1 {
   display: flex;
   position: sticky;
   top: 0;
-  color: black;
+  color: white;
   font-weight: bold;
   z-index: 10;
   border-bottom: 1px solid #2c3e50;
@@ -495,7 +500,7 @@ h1 {
 }
 .clickable-date {
   cursor: pointer;
-  color: #2c3e50;
+  color: white;
 }
 
 .react-datepicker-wrapper,
@@ -535,9 +540,9 @@ h1 {
 .gantt-task-bar .circle {
   position: absolute;
   top: 50%;
-  width: 10px;
-  height: 10px;
-  border: 2px solid black;
+  width: 6px;
+  height: 6px;
+  border: 2px solid rgb(143, 143, 143);
   border-radius: 50%;
   transform: translateY(-50%);
   opacity: 0;
@@ -545,28 +550,17 @@ h1 {
 }
 
 .gantt-task-bar .start-circle {
-  left: -15px;
+  left: -10px;
 }
 
 .gantt-task-bar .end-circle {
-  right: -15px;
+  right: -10px;
 }
 
 .gantt-task-bar:hover .circle {
   opacity: 1;
 }
 
-.circle {
-  position: absolute;
-  top: 50%;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #fff;
-  border: 2px solid #ff5722;
-  transform: translateY(-50%);
-  opacity: 0;
-}
 
 .gantt-task-bar:hover .circle {
   opacity: 1;
@@ -594,10 +588,10 @@ h1 {
 
 .circle {
   position: absolute;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #ef4444;
+  width: 6px;
+  height: 6px;
+  border-radius: 30%;
+  background: #ffffff;
   border: 2px solid white;
   cursor: crosshair;
   z-index: 20;
