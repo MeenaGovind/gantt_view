@@ -17,6 +17,7 @@ import {
   addMonths,
   subMonths,
 } from "date-fns";
+import { getSmoothStepPath, getBezierPath } from "@xyflow/react";
 
 const DAY_WIDTH = 60;
 
@@ -221,52 +222,76 @@ const GanttChart = ({ tasks, setTasks }) => {
     return type === "E" ? startX + width : startX;
   };
 
- 
-const getAnchorY = (taskId, type) => {
-  const index = tasks.findIndex((t) => t.id === taskId);
-  const rowTop = index * ROW_HEIGHT;
-  // push line slightly outside bar
-  const OFFSET = 6;
-  if (type === "S") {
-    return rowTop + BAR_HEIGHT / 2 - OFFSET;
-  }
-  // type === "E"
-  return rowTop + BAR_HEIGHT / 2 + OFFSET;
-};
-
-  // ---------- L-SHAPE PATH FOR DEPENDENCIES ----------
-  const getDependencyPath = (x1, y1, x2, y2, fromType, toType) => {
-    const GAP = 30;
-    let startX = x1;
-    let startY = y1;
-    let endX = x2;
-    let endY = y2;
-    let midX;
-
-    if (fromType === "E" && toType === "S")
-      midX = Math.max(startX + GAP, endX - GAP); // FS
-    else if (fromType === "S" && toType === "S")
-      midX = Math.min(startX - GAP, endX - GAP); // SS
-    else if (fromType === "E" && toType === "E")
-      midX = Math.max(startX + GAP, endX + GAP); // FF
-    else if (fromType === "S" && toType === "E")
-      midX = Math.min(startX - GAP, endX + GAP); // SF
-    else midX = (startX + endX) / 2;
-
-    return `
-      M ${startX} ${startY}
-      L ${midX} ${startY}
-      L ${midX} ${endY}
-      L ${endX} ${endY}
-    `;
+  const getAnchorY = (taskId, type) => {
+    const index = tasks.findIndex((t) => t.id === taskId);
+    const rowTop = index * ROW_HEIGHT;
+    // push line slightly outside bar
+    const OFFSET = 6;
+    if (type === "S") {
+      return rowTop + BAR_HEIGHT / 2 - OFFSET;
+    }
+    // type === "E"
+    return rowTop + BAR_HEIGHT / 2 + OFFSET;
   };
+
+  // ---------- POLYLINE POINTS FOR DEPENDENCIES ----------
+  // const getDependencyPoints = (x1, y1, x2, y2, fromType, toType) => {
+  //   const GAP = 30;
+  //   let midX;
+
+  //   if (fromType === "E" && toType === "S")
+  //     midX = Math.max(x1 + GAP, x2 - GAP); // ES
+  //   else if (fromType === "S" && toType === "S")
+  //     midX = Math.min(x1 - GAP, x2 - GAP); // SS
+  //   else if (fromType === "E" && toType === "E")
+  //     midX = Math.max(x1 + GAP, x2 + GAP); // EE
+  //   else if (fromType === "S" && toType === "E")
+  //     midX = Math.min(x1 - GAP, x2 + GAP); // SE
+  //   else midX = (x1 + x2) / 2;
+
+  //   return [
+  //     `${x1},${y1}`,
+  //     `${midX},${y1}`,
+  //     `${midX},${y2}`,
+  //     `${x2},${y2}`,
+  //   ].join(" ");
+  // };
 
   /* ---------- DEPENDENCY COLORS ---------- */
   const DEPENDENCY_COLORS = {
     ES: "#ff9800",
     SS: "#4caf50",
-    EE: "#2196f3", 
-    SE: "#9c27b0", 
+    EE: "#2196f3",
+    SE: "#9c27b0",
+  };
+
+  // ---------- LIVE DRAW (MS PROJECT STYLE) ----------
+  // const getLiveDependencyPoints = (x1, y1, x2, y2) => {
+  //   const GAP = 40;
+
+  //   // Always go right first
+  //   const midX = x1 + GAP;
+
+  //   return [
+  //     `${x1},${y1}`,   // start
+  //     `${midX},${y1}`, // horizontal
+  //     `${midX},${y2}`, // vertical
+  //     `${x2},${y2}`,   // horizontal to mouse
+  //   ].join(" ");
+  // };
+
+  const getXyflowPath = ({ x1, y1, x2, y2, fromType, toType }) => {
+    const [path] = getSmoothStepPath({
+      sourceX: x1,
+      sourceY: y1,
+      targetX: x2,
+      targetY: y2,
+      sourcePosition: fromType === "E" ? "right" : "left",
+      targetPosition: toType === "S" ? "left" : "right",
+      borderRadius: 6,
+    });
+
+    return path;
   };
 
   return (
@@ -512,7 +537,7 @@ const getAnchorY = (taskId, type) => {
             inset: 0,
             marginTop: 50,
             width: "100%",
-            height: "100%",
+            height: tasks.length * ROW_HEIGHT + 100,
             pointerEvents: "none",
             zIndex: 10,
           }}
@@ -534,31 +559,42 @@ const getAnchorY = (taskId, type) => {
           {/* ACTIVE DRAWING LINE */}
           {drawing && (
             <path
-              d={`M ${drawing.startX} ${drawing.startY} L ${drawing.x} ${drawing.y}`}
-              stroke="#ff5722"
-              strokeWidth="2"
+              d={getXyflowPath({
+                x1: drawing.startX,
+                y1: drawing.startY,
+                x2: drawing.x,
+                y2: drawing.y,
+                fromType: drawing.fromType,
+                toType: "S",
+              })}
               fill="none"
-              strokeDasharray="4 2"
+              stroke="#ff9800"
+              strokeWidth="2"
+              strokeDasharray="5 4"
             />
           )}
-
-          {/* SAVED DEPENDENCIES */}
+          {/* Saved Dependencies */}
           {dependencies.map((d, i) => {
             const x1 = getAnchorX(d.from, d.type[0]);
-            const y1 = getAnchorY(d.from);
+            const y1 = getAnchorY(d.from, d.type[0]);
             const x2 = getAnchorX(d.to, d.type[1]);
-            const y2 = getAnchorY(d.to);
+            const y2 = getAnchorY(d.to, d.type[1]);
+
             return (
               <path
-                d={getDependencyPath(x1, y1, x2, y2, d.type[0], d.type[1])}
-                stroke={DEPENDENCY_COLORS[d.type] || "#333"}
-                strokeWidth="2"
+                key={i}
+                d={getXyflowPath({
+                  x1,
+                  y1,
+                  x2,
+                  y2,
+                  fromType: d.type[0],
+                  toType: d.type[1],
+                })}
                 fill="none"
+                stroke={DEPENDENCY_COLORS[d.type]}
+                strokeWidth={2}
                 markerEnd="url(#arrow)"
-                style={{
-                  stroke: DEPENDENCY_COLORS[d.type] || "#333",
-                  color: DEPENDENCY_COLORS[d.type] || "#333",
-                }}
               />
             );
           })}

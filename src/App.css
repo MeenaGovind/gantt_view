@@ -461,9 +461,8 @@ h1 {
   position: relative;
 }
 .gantt-task-bar {
-  position: absolute;
   height: 32px;
-  background: linear-gradient(90deg, #f39c12, #e74c3c);
+  background: linear-gradient(90deg, #786dea, #4841d4);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -473,6 +472,8 @@ h1 {
   cursor: pointer;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s;
+   position: relative;
+  z-index: 1; 
 }
 .gantt-task-bar:hover {
   transform: scale(1.05);
@@ -504,9 +505,7 @@ h1 {
   background: transparent;
 }
 
-.gantt-task-bar {
-  position: relative;
-}
+
 
 .resize-circle {
   width: 12px;
@@ -529,13 +528,7 @@ h1 {
   right: -6px;
 }
 
-.gantt-task-bar:hover .resize-circle {
-  opacity: 1;
-}
 
-.gantt-task-bar {
-  position: relative;
-}
 
 .gantt-task-bar .circle {
   position: absolute;
@@ -559,15 +552,6 @@ h1 {
 
 .gantt-task-bar:hover .circle {
   opacity: 1;
-}
-.gantt-task-bar {
-  position: absolute;
-  background: #4caf50;
-  color: #fff;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .circle {
@@ -593,13 +577,6 @@ h1 {
 .end-circle {
   right: -6px;
 }
-.gantt-task-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  font-weight: 500;
-}
 
 .task-title {
   pointer-events: none;
@@ -607,19 +584,6 @@ h1 {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 90%;
-}
-.gantt-task-bar {
-  position: relative;
-  background: linear-gradient(90deg, rgb(107 169 219), #656974);
-  border-radius: 4px;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: grab;
-  user-select: none;
 }
 
 .gantt-task-bar:active {
