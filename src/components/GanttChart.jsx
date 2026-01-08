@@ -281,14 +281,19 @@ const GanttChart = ({ tasks, setTasks }) => {
   // };
 
   const getXyflowPath = ({ x1, y1, x2, y2, fromType, toType }) => {
+    // console.log("Data cheker For both types",x1,y1,x2,y2,fromType,toType);
+    const YAdjusted2 = toType === "E" ? y2-5 : y2+5;
+    const yAdjusted1 = fromType === "S" ? y1+5 : y1-5;
+    const xAdjusted2 = toType === "S" ? x2-2 :x2+2;
     const [path] = getSmoothStepPath({
       sourceX: x1,
-      sourceY: y1,
-      targetX: x2,
-      targetY: y2,
+      sourceY: yAdjusted1,
+      targetX: xAdjusted2,
+      targetY: YAdjusted2,
       sourcePosition: fromType === "E" ? "right" : "left",
       targetPosition: toType === "S" ? "left" : "right",
-      borderRadius: 6,
+      borderRadius: 4,
+      offset:40,
     });
 
     return path;
@@ -297,7 +302,7 @@ const GanttChart = ({ tasks, setTasks }) => {
   return (
     <div
       className="gantt-wrapper"
-      style={{ display: "flex", overflow: "hidden" }}
+      style={{ display: "flex", overflow: "hidden",userSelect:"none" }}
     >
       {/* LEFT PANEL */}
       <div
@@ -552,7 +557,7 @@ const GanttChart = ({ tasks, setTasks }) => {
               orient="auto"
               markerUnits="strokeWidth"
             >
-              <path d="M0,0 L0,6 L9,3 z" fill="currentColor" />
+              <path d="M 6 1 L 6 5 L 9 3 z" fill="gray" />
             </marker>
           </defs>
 
@@ -594,6 +599,7 @@ const GanttChart = ({ tasks, setTasks }) => {
                 fill="none"
                 stroke={DEPENDENCY_COLORS[d.type]}
                 strokeWidth={2}
+                color="white"
                 markerEnd="url(#arrow)"
               />
             );

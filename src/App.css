@@ -359,7 +359,8 @@ body {
 
 .container {
   max-width: 1400px;
-  margin: auto;
+  /* margin: auto; */
+  height: 100vh;
   padding: 20px;
 }
 
@@ -461,6 +462,7 @@ h1 {
   position: relative;
 }
 .gantt-task-bar {
+  z-index: 10;
   height: 32px;
   background: linear-gradient(90deg, #786dea, #4841d4);
   border-radius: 8px;
